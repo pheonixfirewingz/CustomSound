@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "custom_sounds:block/sound_node"}
+  }
+}
