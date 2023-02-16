@@ -1,6 +1,7 @@
-package io.github.phoenixfirewingz.customsounds.server;
+package io.github.phoenixfirewingz.customsounds.block;
 
 import io.github.phoenixfirewingz.customsounds.CustomSounds;
+import io.github.phoenixfirewingz.customsounds.gui.NodeScreenHandle;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,7 +19,7 @@ public class SoundNodeEntity extends BlockEntity implements NamedScreenHandlerFa
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        return null;
+        return new NodeScreenHandle(syncId,playerInventory);
     }
 
     @Override

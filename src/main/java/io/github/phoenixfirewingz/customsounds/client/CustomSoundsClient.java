@@ -1,16 +1,17 @@
 package io.github.phoenixfirewingz.customsounds.client;
 
+import io.github.phoenixfirewingz.customsounds.CustomSounds;
+import io.github.phoenixfirewingz.customsounds.gui.NodeScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.SoundManager;
 
 @Environment(EnvType.CLIENT)
 public class CustomSoundsClient implements ClientModInitializer {
-    private MinecraftClient game;
     @Override
     public void onInitializeClient() {
-        game = MinecraftClient.getInstance();
+        ScreenRegistry.register(CustomSounds.node_handle, NodeScreen::new);
     }
 }
