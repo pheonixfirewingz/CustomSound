@@ -1,20 +1,22 @@
 package io.github.phoenixfirewingz.customsounds.gui;
 
 import io.github.phoenixfirewingz.customsounds.CustomSounds;
-import io.github.phoenixfirewingz.customsounds.block.SoundNode;
-import io.github.phoenixfirewingz.customsounds.block.SoundNodeEntity;
+import io.github.phoenixfirewingz.customsounds.util.ArrayPropertySaver;
+import io.github.phoenixfirewingz.customsounds.util.PropertySaver;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.math.BlockPos;
 
 public class NodeScreenHandle extends ScreenHandler {
+    protected final PropertySaver propertyDelegate;
+
     public NodeScreenHandle(int syncId, PlayerInventory playerInventory) {
-        super(CustomSounds.node_handle, syncId);
+        this(syncId, new ArrayPropertySaver(1));
     }
-    public NodeScreenHandle(int syncId, PlayerInventory playerInventory, SoundNodeEntity entity) {
-        super(CustomSounds.node_handle, syncId);
+    public NodeScreenHandle(int syncId, PropertySaver propertyDelegate) {
+        super(CustomSounds.SOUND_NODE_SCREEN_HANDLER_TYPE, syncId);
+        this.propertyDelegate = propertyDelegate;
     }
 
     @Override

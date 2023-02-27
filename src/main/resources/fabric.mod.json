@@ -15,9 +15,6 @@
     "client": [
       "io.github.phoenixfirewingz.customsounds.client.CustomSoundsClient"
     ],
-    "server": [
-      "io.github.phoenixfirewingz.customsounds.server.CustomSoundsServer"
-    ],
     "main": [
       "io.github.phoenixfirewingz.customsounds.CustomSounds"
     ]
