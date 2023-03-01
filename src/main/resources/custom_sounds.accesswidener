@@ -1,0 +1,6 @@
+accessWidener v2 named
+# Creating custom screen handler types
+transitive-accessible class net/minecraft/screen/ScreenHandlerType$Factory
+transitive-accessible method net/minecraft/screen/ScreenHandlerType <init> (Lnet/minecraft/screen/ScreenHandlerType$Factory;)V
+# Creating block entity types
+transitive-extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
