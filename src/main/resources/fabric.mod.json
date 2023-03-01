@@ -11,7 +11,6 @@
   "license": "LGPL-3.0",
   "icon": "assets/CustomSounds/icon.png",
   "environment": "*",
-  "accessWidener" : "custom_sounds.accesswidener",
   "entrypoints": {
     "client": [
       "io.github.phoenixfirewingz.customsounds.client.CustomSoundsClient"
@@ -21,7 +20,8 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.14.14",
+    "fabricloader": "*",
+    "fabric-api": "*",
     "minecraft": "1.19.3"
   }
 }
