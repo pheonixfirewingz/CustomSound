@@ -4,6 +4,7 @@ import com.mojang.datafixers.types.Type;
 import io.github.phoenixfirewingz.customsounds.block.SoundNode;
 import io.github.phoenixfirewingz.customsounds.client.screen.NodeScreenHandle;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -47,7 +48,7 @@ public class CustomSounds implements ModInitializer {
         return Registry.register(Registries.BLOCK_ENTITY_TYPE, id, builder.build(type));
     }
 
-    private static <T extends ScreenHandler> ScreenHandlerType register(String id, ScreenHandlerType.Factory<T> factory) {
-        return Registry.register(Registries.SCREEN_HANDLER, id, new ScreenHandlerType<T>(factory));
+    private static <T extends ScreenHandler> ScreenHandlerType register(String id, ExtendedScreenHandlerType.ExtendedFactory<T> factory) {
+        return Registry.register(Registries.SCREEN_HANDLER, id, new ExtendedScreenHandlerType<T>(factory));
     }
 }
