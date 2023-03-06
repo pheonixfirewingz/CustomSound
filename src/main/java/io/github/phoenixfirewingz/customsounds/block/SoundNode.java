@@ -2,6 +2,7 @@ package io.github.phoenixfirewingz.customsounds.block;
 
 import io.github.phoenixfirewingz.customsounds.CustomSounds;
 import io.github.phoenixfirewingz.customsounds.client.screen.NodeScreenHandle;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -12,6 +13,7 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
@@ -63,7 +65,6 @@ public class SoundNode extends BlockWithEntity {
 
     public static class SoundNodeEntity extends BlockEntity implements ExtendedScreenHandlerFactory {
         protected String url;
-        private String last_url;
         public SoundNodeEntity(BlockPos pos, BlockState state) {
             super(SOUND_NODE_ENTITY_BLOCK_ENTITY_TYPE, pos, state);
         }
@@ -71,6 +72,15 @@ public class SoundNode extends BlockWithEntity {
         @Override
         public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
             buf.writeBlockPos(this.pos);
+        }
+
+        @Override
+        public void markDirty() {
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeBlockPos(this.getPos());
+            buf.writeString(this.getUrl());
+            ClientPlayNetworking.send(CustomSounds.NODE_SYNC_ID,buf);
+            super.markDirty();
         }
 
         @Override

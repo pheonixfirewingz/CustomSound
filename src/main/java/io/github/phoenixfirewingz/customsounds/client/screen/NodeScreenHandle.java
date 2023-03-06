@@ -3,26 +3,23 @@ package io.github.phoenixfirewingz.customsounds.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.phoenixfirewingz.customsounds.CustomSounds;
 import io.github.phoenixfirewingz.customsounds.block.SoundNode;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.UpdateCommandBlockC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.CommandBlockExecutor;
-import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import static io.github.phoenixfirewingz.customsounds.CustomSounds.SOUND_NODE_SCREEN_HANDLER_TYPE;
@@ -88,6 +85,12 @@ public class NodeScreenHandle extends ScreenHandler {
         protected void onTextChanged(String s)
         {
             handler.entity.setUrl(s);
+        }
+
+        @Override
+        public void close() {
+            handler.entity.markDirty();
+            super.close();
         }
 
         @Override

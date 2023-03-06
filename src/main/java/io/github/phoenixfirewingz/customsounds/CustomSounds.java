@@ -3,7 +3,10 @@ package io.github.phoenixfirewingz.customsounds;
 import com.mojang.datafixers.types.Type;
 import io.github.phoenixfirewingz.customsounds.block.SoundNode;
 import io.github.phoenixfirewingz.customsounds.client.screen.NodeScreenHandle;
+import io.github.phoenixfirewingz.customsounds.networking.packet.SoundNodeSyncC2SPacket;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -24,6 +27,8 @@ public class CustomSounds implements ModInitializer {
     public static final String MOD_ID = "custom_sounds";
     public static final Block SOUND_NODE;
     public static final Item SOUND_NODE_BLOCK;
+
+    public static final Identifier NODE_SYNC_ID = genID("node_sync");
     public static ScreenHandlerType<NodeScreenHandle> SOUND_NODE_SCREEN_HANDLER_TYPE;
     public static BlockEntityType<SoundNode.SoundNodeEntity> SOUND_NODE_ENTITY_BLOCK_ENTITY_TYPE;
 
@@ -36,6 +41,7 @@ public class CustomSounds implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ServerPlayNetworking.registerGlobalReceiver(NODE_SYNC_ID, SoundNodeSyncC2SPacket::receive);
     }
 
     public static Identifier genID(String name)
