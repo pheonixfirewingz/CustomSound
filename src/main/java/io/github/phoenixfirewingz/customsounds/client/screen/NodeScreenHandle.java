@@ -3,6 +3,8 @@ package io.github.phoenixfirewingz.customsounds.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.phoenixfirewingz.customsounds.CustomSounds;
 import io.github.phoenixfirewingz.customsounds.block.SoundNode;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.entity.BlockEntity;
@@ -46,6 +48,7 @@ public class NodeScreenHandle extends ScreenHandler {
         return player.isCreative();
     }
 
+    @Environment(EnvType.CLIENT)
     public static class NodeScreen extends HandledScreen<NodeScreenHandle> {
         private static final Identifier TEXTURE = new Identifier(CustomSounds.MOD_ID, "textures/gui/container/sound_node_ui.png");
         private TextFieldWidget text;
@@ -85,12 +88,7 @@ public class NodeScreenHandle extends ScreenHandler {
         protected void onTextChanged(String s)
         {
             handler.entity.setUrl(s);
-        }
-
-        @Override
-        public void close() {
             handler.entity.markDirty();
-            super.close();
         }
 
         @Override

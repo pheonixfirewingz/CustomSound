@@ -4,8 +4,6 @@ import io.github.phoenixfirewingz.customsounds.CustomSounds;
 import io.github.phoenixfirewingz.customsounds.client.screen.NodeScreenHandle;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
@@ -13,7 +11,6 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
@@ -21,7 +18,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -46,14 +42,14 @@ public class SoundNode extends BlockWithEntity {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!world.isClient) {
+        if (!world.isClient())
+        {
             NamedScreenHandlerFactory screenHandlerFactory = ((SoundNodeEntity) world.getBlockEntity(pos));
-
-            if (screenHandlerFactory != null) {
+            if (screenHandlerFactory != null)
                 player.openHandledScreen(screenHandlerFactory);
-            }
         }
-
+        else
+            super.onUse(state,world,pos,player,hand,hit);
         return ActionResult.SUCCESS;
     }
 
@@ -64,22 +60,27 @@ public class SoundNode extends BlockWithEntity {
     }
 
     public static class SoundNodeEntity extends BlockEntity implements ExtendedScreenHandlerFactory {
-        protected String url;
+        protected String url = "";
         public SoundNodeEntity(BlockPos pos, BlockState state) {
             super(SOUND_NODE_ENTITY_BLOCK_ENTITY_TYPE, pos, state);
         }
 
         @Override
         public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-            buf.writeBlockPos(this.pos);
+            buf.writeBlockPos(this.getPos());
+            buf.writeString(this.getUrl());
         }
+
+
 
         @Override
         public void markDirty() {
-            PacketByteBuf buf = PacketByteBufs.create();
-            buf.writeBlockPos(this.getPos());
-            buf.writeString(this.getUrl());
-            ClientPlayNetworking.send(CustomSounds.NODE_SYNC_ID,buf);
+            if (this.getWorld().isClient) {
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeBlockPos(this.pos);
+                buf.writeString(this.getUrl());
+                ClientPlayNetworking.send(CustomSounds.NODE_SYNC_ID, buf);
+            }
             super.markDirty();
         }
 
@@ -97,8 +98,6 @@ public class SoundNode extends BlockWithEntity {
         }
 
         public static void tick(World world, BlockPos blockPos, BlockState state, SoundNodeEntity entity) {
-            if (!world.isClient())
-                markDirty(world, blockPos, state);
         }
 
 
