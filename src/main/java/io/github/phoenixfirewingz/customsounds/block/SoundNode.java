@@ -4,6 +4,7 @@ import io.github.phoenixfirewingz.customsounds.CustomSounds;
 import io.github.phoenixfirewingz.customsounds.client.screen.NodeScreenHandle;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
@@ -26,6 +27,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 import static io.github.phoenixfirewingz.customsounds.CustomSounds.SOUND_NODE_ENTITY_BLOCK_ENTITY_TYPE;
 
@@ -53,14 +56,8 @@ public class SoundNode extends BlockWithEntity {
         return ActionResult.SUCCESS;
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, SOUND_NODE_ENTITY_BLOCK_ENTITY_TYPE, SoundNodeEntity::tick);
-    }
-
     public static class SoundNodeEntity extends BlockEntity implements ExtendedScreenHandlerFactory {
-        protected String url = "";
+        protected String url;
         public SoundNodeEntity(BlockPos pos, BlockState state) {
             super(SOUND_NODE_ENTITY_BLOCK_ENTITY_TYPE, pos, state);
         }
@@ -71,24 +68,10 @@ public class SoundNode extends BlockWithEntity {
             buf.writeString(this.getUrl());
         }
 
-
-
-        @Override
-        public void markDirty() {
-            if (this.getWorld().isClient) {
-                PacketByteBuf buf = PacketByteBufs.create();
-                buf.writeBlockPos(this.pos);
-                buf.writeString(this.getUrl());
-                ClientPlayNetworking.send(CustomSounds.NODE_SYNC_ID, buf);
-            }
-            super.markDirty();
-        }
-
         @Override
         public void readNbt(NbtCompound nbt) {
             super.readNbt(nbt);
             this.setUrl(nbt.getString("url"));
-            LoggerFactory.getLogger("Minecraft").info("NBT:" + nbt);
         }
 
         @Override
@@ -96,10 +79,6 @@ public class SoundNode extends BlockWithEntity {
             super.writeNbt(nbt);
             nbt.putString("url",this.getUrl());
         }
-
-        public static void tick(World world, BlockPos blockPos, BlockState state, SoundNodeEntity entity) {
-        }
-
 
         @Override
         public Text getDisplayName() {
@@ -109,6 +88,9 @@ public class SoundNode extends BlockWithEntity {
         @Nullable
         @Override
         public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeBlockPos(this.getPos());
+            ClientPlayNetworking.send(CustomSounds.NODE_SYNC_ID, buf);
             return new NodeScreenHandle(syncId, inv,this);
         }
 
